@@ -7,7 +7,10 @@ class Recognizer extends Component {
   constructor() {
     super();
     this.state = {
-      listening: false
+      listening: false,
+      text: "",
+      isEditting: false,
+      value: ""
     };
     this.toggleListen = this.toggleListen.bind(this);
     this.handleListen = this.handleListen.bind(this);
@@ -20,19 +23,23 @@ class Recognizer extends Component {
   toggleListen() {
     this.setState(
       {
-        listening: !this.state.listening
+        listening: !this.state.listening,
+        isEditting: false
       },
       this.handleListen
     );
+    this.props.toggleRecognizer();
   }
 
   handleListen() {
     console.log("listening?", this.state.listening);
-
     if (this.state.listening) {
       this.recognition.start();
       this.recognition.onend = () => {
-        console.log("...continue listening...");
+        console.log(
+          "...continue listening...",
+          this.state.text.trim().slice(-1)
+        );
         this.recognition.start();
       };
     } else {
@@ -52,11 +59,16 @@ class Recognizer extends Component {
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) finalTranscript += transcript + " ";
+        if (event.results[i].isFinal) finalTranscript += transcript + ". ";
         else interimTranscript += transcript;
       }
       document.getElementById("interim").innerHTML = interimTranscript;
-      document.getElementById("final").innerHTML = finalTranscript;
+      // document.getElementById("final").innerHTML = finalTranscript;
+      // this.props.setFianlText(finalTranscript);
+      this.setState({ text: finalTranscript }, () => {
+        document.getElementById("final").innerHTML = this.state.text;
+        this.props.setFianlText(this.state.text);
+      });
 
       //-------------------------COMMANDS------------------------------------
 
@@ -69,7 +81,13 @@ class Recognizer extends Component {
         this.recognition.onend = () => {
           console.log("Stopped listening per command");
           const finalText = transcriptArr.slice(0, -3).join(" ");
-          document.getElementById("final").innerHTML = finalText;
+          // document.getElementById("final").innerHTML = finalText;
+          // this.props.setFianlText(finalText);
+
+          this.setState({ text: finalText }, () => {
+            document.getElementById("final").innerHTML = this.state.text;
+            this.props.setFianlText(this.state.text);
+          });
         };
       }
     };
@@ -80,6 +98,19 @@ class Recognizer extends Component {
       console.log("Error occurred in this.recognition: " + event.error);
     };
   }
+
+  handleChange = event => {
+    this.setState({ text: event.target.value });
+  };
+
+  handleSubmit = event => {
+    // alert("A name was submitted: " + this.state.text);
+    this.setState({ isEditting: false }, () => {
+      document.getElementById("final").innerHTML = this.state.text;
+      this.props.setFianlText(this.state.text);
+    });
+    event.preventDefault();
+  };
 
   render() {
     const state = this.state.listening ? "listening_0" : "ear";
@@ -97,7 +128,34 @@ class Recognizer extends Component {
           />
         </div>
         <div id="interim" className={classNames("interim")} />
-        <div id="final" className={classNames("final")} />
+        {this.state.isEditting ? (
+          <form
+            className={classNames("form")}
+            id="final_edit"
+            onSubmit={this.handleSubmit}
+          >
+            <textarea
+              className={classNames("textarea")}
+              value={this.state.text}
+              onChange={this.handleChange}
+              ref={c => (this.textarea = c)}
+            />
+            <div
+              className={classNames("button_box")}
+              onClick={this.handleSubmit}
+            >
+              <div className={classNames("button")}>Submit</div>
+            </div>
+          </form>
+        ) : (
+          <div
+            id="final"
+            className={classNames("final")}
+            onClick={() => {
+              this.setState({ isEditting: true });
+            }}
+          />
+        )}
       </div>
     );
   }

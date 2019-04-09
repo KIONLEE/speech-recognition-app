@@ -7,7 +7,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "react-speech": "^0.3.2"
+    "react-speech": "^0.3.2",
+    "speak-tts": "^2.0.8"
   },
   "scripts": {
     "start": "react-scripts start",
