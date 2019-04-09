@@ -85,18 +85,16 @@ class Recognizer extends Component {
     const state = this.state.listening ? "listening_0" : "ear";
     return (
       <div className={classNames("container")}>
-        <div calssName="img_box_container">
-          <div className="img_box_wrapper">
-            <img
-              id="microphone-btn"
-              className={classNames(
-                `button${this.state.listening ? "--active" : ""}`
-              )}
-              src={getSource(state)}
-              alt={state}
-              onClick={this.toggleListen}
-            />
-          </div>
+        <div className="img_box_container">
+          <img
+            id="microphone-btn"
+            className={classNames(
+              `button${this.state.listening ? "--active" : ""}`
+            )}
+            src={getSource(state)}
+            alt={state}
+            onClick={this.toggleListen}
+          />
         </div>
         <div id="interim" className={classNames("interim")} />
         <div id="final" className={classNames("final")} />

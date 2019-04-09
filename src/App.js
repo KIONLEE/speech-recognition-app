@@ -11,8 +11,13 @@ recognition.lang = "en-US";
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Recognizer recognition={recognition} />
+      <div>
+        <div className="App_title">
+          <text>Welcome to Choi's Speaking Assistance</text>
+        </div>
+        <div className="App">
+          <Recognizer recognition={recognition} />
+        </div>
       </div>
     );
   }

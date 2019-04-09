@@ -8,22 +8,33 @@
 }
 
 .img_box_container {
-  width: 200px;
+  width: auto;
   height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }
 
 .button {
   width: 160px;
   height: 160px;
+  opacity: 0.7;
   /* background: #1462cf; */
   /* border-radius: 50%; */
-  margin: 6em 0 2em 0;
+}
+
+.button:hover {
+  width: 160px;
+  height: 160px;
+  opacity: 1;
+  /* background: #1462cf; */
+  /* border-radius: 50%; */
 }
 
 .button--active {
-  width: 100px;
-  height: 100px;
-  margin: 6em 0 2em 0;
+  width: 160px;
+  height: 160px;
 }
 
 .interim {
@@ -35,7 +46,7 @@
 }
 
 .final {
-  color: black;
+  color: whitesmoke;
   border: #ccc 1px solid;
   padding: 1em;
   margin: 1em;
