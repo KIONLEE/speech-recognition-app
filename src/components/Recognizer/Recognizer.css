@@ -43,7 +43,7 @@
 }
 
 .interim_wrapper {
-  color: gray;
+  color: whitesmoke;
   border: rgb(141, 141, 141) 2px solid;
   padding: 1em;
   margin: 1em;
@@ -55,6 +55,26 @@
   align-items: center;
   flex-direction: column;
   border-radius: 10px;
+}
+
+.interim_wrapper--my_voice {
+  background-color: rgb(141, 141, 141);
+  color: white;
+  border: rgb(141, 141, 141) 2px solid;
+  padding: 1em;
+  margin: 1em;
+  width: 300px;
+  min-height: 20px;
+  opacity: 0.8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 10px;
+}
+
+.interim {
+  font-weight: bold;
 }
 
 .final_wrapper {
@@ -69,6 +89,7 @@
   align-items: center;
   flex-direction: column;
   border-radius: 10px;
+  font-weight: bold;
 }
 
 .form {
@@ -112,6 +133,6 @@
 }
 
 .button_submit {
-  color: white;
+  color: #282c34;
   font-weight: bold;
 }

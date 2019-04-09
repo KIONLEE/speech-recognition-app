@@ -21,7 +21,8 @@ class App extends Component {
     text: "",
     lastOpenTime: null,
     currentInterval: null,
-    showMyVoice: false
+    showMyVoice: false,
+    isPlayingMyVoice: false
   };
 
   setInterverId = null;
@@ -34,6 +35,7 @@ class App extends Component {
         //   new Date(new Date() - this.state.lastOpenTime)
         // );
         this.duration = new Date() - this.state.lastOpenTime;
+        this.setState({ isPlayingMyVoice: true });
         console.log("duration:", this.duration);
       }
       if (
@@ -44,6 +46,7 @@ class App extends Component {
         this.setState({
           showMyVoice: false,
           lastOpenTime: null,
+          isPlayingMyVoice: false
         });
       }
     }, 1000);
@@ -92,6 +95,7 @@ class App extends Component {
             handleShowMyVoice={this.handleShowMyVoice}
             showMyVoice={this.state.showMyVoice}
             setCurrentInterval={this.setCurrentInterval}
+            isPlayingMyVoice={this.state.isPlayingMyVoice}
           />
           <Speaker
             speech={speech}

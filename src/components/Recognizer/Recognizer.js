@@ -143,6 +143,9 @@ class Recognizer extends Component {
 
   render() {
     const state = this.state.listening ? "listening_0" : "ear";
+    const isMyVoiceAvailable =
+      !this.state.listening && this.state.recordedBlobURL;
+    const { isPlayingMyVoice } = this.props;
     return (
       <div className={classNames("container")}>
         <div className="img_box_container">
@@ -163,25 +166,24 @@ class Recognizer extends Component {
             height="0px"
           />
         </div>
-        {!this.state.listening && this.state.recordedBlobURL ? (
-          <div>
-            <div
-              className={classNames("button_show_my_voice")}
-              onClick={this.props.handleShowMyVoice}
-            >
-              My Voice
-            </div>
-            {this.props.showMyVoice ? (
-              <Iframe
-                url={this.state.recordedBlobURL}
-                width="0px"
-                height="0px"
-              />
+        {this.props.showMyVoice ? (
+          <Iframe url={this.state.recordedBlobURL} width="0px" height="0px" />
+        ) : null}
+        <div
+          className={classNames(
+            isMyVoiceAvailable ? "interim_wrapper--my_voice" : "interim_wrapper"
+          )}
+          onClick={isMyVoiceAvailable ? this.props.handleShowMyVoice : null}
+        >
+          <div id="interim" className={classNames("interim")}>
+            {isMyVoiceAvailable ? (
+              isPlayingMyVoice ? (
+                <img src={getSource("playing_1")} alt="playing" width="50px" />
+              ) : (
+                <text>Play My Voice</text>
+              )
             ) : null}
           </div>
-        ) : null}
-        <div className={classNames("interim_wrapper")}>
-          <div id="interim" className={classNames("interim")} />
         </div>
         {this.state.isEditting ? (
           <form
