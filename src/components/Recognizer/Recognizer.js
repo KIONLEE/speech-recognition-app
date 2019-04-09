@@ -127,7 +127,9 @@ class Recognizer extends Component {
             onClick={this.toggleListen}
           />
         </div>
-        <div id="interim" className={classNames("interim")} />
+        <div className={classNames("interim_wrapper")}>
+          <div id="interim" className={classNames("interim")} />
+        </div>
         {this.state.isEditting ? (
           <form
             className={classNames("form")}
@@ -138,23 +140,25 @@ class Recognizer extends Component {
               className={classNames("textarea")}
               value={this.state.text}
               onChange={this.handleChange}
+              autoFocus
               ref={c => (this.textarea = c)}
             />
             <div
               className={classNames("button_box")}
               onClick={this.handleSubmit}
             >
-              <div className={classNames("button")}>Submit</div>
+              <div className={classNames("button_submit")}>Submit</div>
             </div>
           </form>
         ) : (
           <div
-            id="final"
-            className={classNames("final")}
+            className={classNames("final_wrapper")}
             onClick={() => {
               this.setState({ isEditting: true });
             }}
-          />
+          >
+            <div id="final" className={classNames("final")} />
+          </div>
         )}
       </div>
     );
