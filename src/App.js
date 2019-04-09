@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Recognizer from "./components/Recognizer";
 import Speaker from "./components/Speaker";
 import Speech from "speak-tts";
+import { getSeconds } from "date-fns";
 import "./App.css";
 
 const SpeechRecognition = SpeechRecognition || window.webkitSpeechRecognition;
@@ -17,7 +18,39 @@ const speech = new Speech();
 class App extends Component {
   state = {
     isRecognizing: false,
-    text: ""
+    text: "",
+    lastOpenTime: null,
+    currentInterval: null,
+    showMyVoice: false
+  };
+
+  setInterverId = null;
+  duration = null;
+
+  componentDidMount = () => {
+    this.setInterverId = setInterval(() => {
+      if (this.state.showMyVoice && this.state.lastOpenTime) {
+        // this.duration = getSeconds(
+        //   new Date(new Date() - this.state.lastOpenTime)
+        // );
+        this.duration = new Date() - this.state.lastOpenTime;
+        console.log("duration:", this.duration);
+      }
+      if (
+        this.state.showMyVoice &&
+        this.state.currentInterval &&
+        this.state.currentInterval <= this.duration
+      ) {
+        this.setState({
+          showMyVoice: false,
+          lastOpenTime: null,
+        });
+      }
+    }, 1000);
+  };
+
+  componentWillUnmount = () => {
+    clearInterval(this.setInterverId);
   };
 
   toggleRecognizer = () => {
@@ -26,6 +59,19 @@ class App extends Component {
 
   setFianlText = text => {
     this.setState({ text: text });
+  };
+
+  handleShowMyVoice = () => {
+    this.setState({
+      showMyVoice: !this.state.showMyVoice,
+      lastOpenTime: this.state.showMyVoice ? null : new Date()
+    });
+  };
+
+  setCurrentInterval = interval => {
+    this.setState({
+      currentInterval: interval
+    });
   };
 
   render() {
@@ -43,6 +89,9 @@ class App extends Component {
             recognition={recognition}
             toggleRecognizer={this.toggleRecognizer}
             setFianlText={this.setFianlText}
+            handleShowMyVoice={this.handleShowMyVoice}
+            showMyVoice={this.state.showMyVoice}
+            setCurrentInterval={this.setCurrentInterval}
           />
           <Speaker
             speech={speech}

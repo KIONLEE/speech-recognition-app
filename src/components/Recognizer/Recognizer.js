@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 import getSource from "../../assets";
+import Iframe from "react-iframe";
+import { ReactMic } from "react-mic";
 import "./Recognizer.css";
 
 class Recognizer extends Component {
@@ -10,7 +12,9 @@ class Recognizer extends Component {
       listening: false,
       text: "",
       isEditting: false,
-      value: ""
+      value: "",
+      recordedBlobURL: null,
+      showMyVoice: false
     };
     this.toggleListen = this.toggleListen.bind(this);
     this.handleListen = this.handleListen.bind(this);
@@ -24,15 +28,23 @@ class Recognizer extends Component {
     this.setState(
       {
         listening: !this.state.listening,
-        isEditting: false
+        isEditting: false,
+        startTime: !this.state.listening ? new Date() : null,
+        lastInterval: this.state.listening
+          ? new Date() - this.state.startTime
+          : null
       },
-      this.handleListen
+      () => {
+        this.handleListen();
+        if (this.state.lastInterval) {
+          this.props.setCurrentInterval(this.state.lastInterval);
+        }
+      }
     );
     this.props.toggleRecognizer();
   }
 
   handleListen() {
-    console.log("listening?", this.state.listening);
     if (this.state.listening) {
       this.recognition.start();
       this.recognition.onend = () => {
@@ -112,6 +124,23 @@ class Recognizer extends Component {
     event.preventDefault();
   };
 
+  onData = recordedBlob => {
+    console.log("chunk of real-time data is: ", recordedBlob);
+  };
+
+  onStop = recordedBlob => {
+    this.setState({ recordedBlobURL: recordedBlob.blobURL });
+    console.log("recordedBlob is: ", recordedBlob);
+    // console.log("recordedBlob.url is: ", recordedBlob.blobURL);
+    console.log(
+      "recordedBlob.interval is: ",
+      new Date(recordedBlob.stopTime) - new Date(recordedBlob.startTime)
+    );
+    // this.props.setCurrentInterval(
+    //   new Date(recordedBlob.stopTime) - new Date(recordedBlob.startTime)
+    // );
+  };
+
   render() {
     const state = this.state.listening ? "listening_0" : "ear";
     return (
@@ -126,7 +155,31 @@ class Recognizer extends Component {
             alt={state}
             onClick={this.toggleListen}
           />
+          <ReactMic
+            record={this.state.listening}
+            className="sound-wave"
+            onStop={this.onStop}
+            width="0px"
+            height="0px"
+          />
         </div>
+        {!this.state.listening && this.state.recordedBlobURL ? (
+          <div>
+            <div
+              className={classNames("button_show_my_voice")}
+              onClick={this.props.handleShowMyVoice}
+            >
+              My Voice
+            </div>
+            {this.props.showMyVoice ? (
+              <Iframe
+                url={this.state.recordedBlobURL}
+                width="0px"
+                height="0px"
+              />
+            ) : null}
+          </div>
+        ) : null}
         <div className={classNames("interim_wrapper")}>
           <div id="interim" className={classNames("interim")} />
         </div>
