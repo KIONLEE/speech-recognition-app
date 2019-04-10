@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Recognizer from "./components/Recognizer";
 import Speaker from "./components/Speaker";
 import Speech from "speak-tts";
+// import GoogleTranslate from "google-translate-api";
 import { getSeconds } from "date-fns";
 import "./App.css";
 
@@ -14,6 +15,15 @@ recognition.lang = "en-US";
 const speech = new Speech();
 // speech.setLanguage("en-US");
 // speech.setVoice("Fiona");
+
+var googleTranslate = require("google-translate")(
+  "AIzaSyAaV5rvQgG8a2QkrBXe06tC7CJ5w-xn4_M"
+);
+
+// googleTranslate.translate('My name is Brandon', 'ko', function(err, translation) {
+//   console.log(translation.translatedText);
+//   // =>  Mi nombre es Brandon
+// });
 
 class App extends Component {
   state = {
@@ -78,7 +88,7 @@ class App extends Component {
   };
 
   render() {
-    console.log("App.state:", this.state);
+    // console.log("App.state:", this.state);
     return (
       <div>
         <div className="App_title">
@@ -96,6 +106,7 @@ class App extends Component {
             showMyVoice={this.state.showMyVoice}
             setCurrentInterval={this.setCurrentInterval}
             isPlayingMyVoice={this.state.isPlayingMyVoice}
+            googleTranslate={googleTranslate}
           />
           <Speaker
             speech={speech}

@@ -2,8 +2,11 @@ import React, { Component } from "react";
 import classNames from "classnames";
 import getSource from "../../assets";
 import Iframe from "react-iframe";
+import Translater from "../Translater";
 import { ReactMic } from "react-mic";
 import "./Recognizer.css";
+
+//text가 바뀌는 부분: 총 3군데(interim, final, handleChange)
 
 class Recognizer extends Component {
   constructor() {
@@ -11,8 +14,8 @@ class Recognizer extends Component {
     this.state = {
       listening: false,
       text: "",
+      translatedText: "",
       isEditting: false,
-      value: "",
       recordedBlobURL: null,
       showMyVoice: false
     };
@@ -78,6 +81,7 @@ class Recognizer extends Component {
       // document.getElementById("final").innerHTML = finalTranscript;
       // this.props.setFianlText(finalTranscript);
       this.setState({ text: finalTranscript }, () => {
+        this.translate(this.state.text);
         document.getElementById("final").innerHTML = this.state.text;
         this.props.setFianlText(this.state.text);
       });
@@ -97,6 +101,7 @@ class Recognizer extends Component {
           // this.props.setFianlText(finalText);
 
           this.setState({ text: finalText }, () => {
+            this.translate(this.state.text);
             document.getElementById("final").innerHTML = this.state.text;
             this.props.setFianlText(this.state.text);
           });
@@ -112,7 +117,9 @@ class Recognizer extends Component {
   }
 
   handleChange = event => {
-    this.setState({ text: event.target.value });
+    this.setState({ text: event.target.value }, () => {
+      this.translate(this.state.text);
+    });
   };
 
   handleSubmit = event => {
@@ -132,20 +139,33 @@ class Recognizer extends Component {
     this.setState({ recordedBlobURL: recordedBlob.blobURL });
     console.log("recordedBlob is: ", recordedBlob);
     // console.log("recordedBlob.url is: ", recordedBlob.blobURL);
-    console.log(
-      "recordedBlob.interval is: ",
-      new Date(recordedBlob.stopTime) - new Date(recordedBlob.startTime)
-    );
+    // console.log(
+    //   "recordedBlob.interval is: ",
+    //   new Date(recordedBlob.stopTime) - new Date(recordedBlob.startTime)
+    // );
     // this.props.setCurrentInterval(
     //   new Date(recordedBlob.stopTime) - new Date(recordedBlob.startTime)
     // );
+  };
+
+  translateCallback = (err, translation) => {
+    // console.log(translation.translatedText);
+    this.setState({ translatedText: translation.translatedText });
+    //   return translation.translatedText;
+  };
+
+  translate = source => {
+    const { googleTranslate } = this.props;
+    googleTranslate.translate(source, "ko", (err, translation) => {
+      this.translateCallback(err, translation);
+    });
   };
 
   render() {
     const state = this.state.listening ? "listening_0" : "ear";
     const isMyVoiceAvailable =
       !this.state.listening && this.state.recordedBlobURL;
-    const { isPlayingMyVoice } = this.props;
+    const { isPlayingMyVoice, googleTranslate } = this.props;
     return (
       <div className={classNames("container")}>
         <div className="img_box_container">
@@ -213,6 +233,12 @@ class Recognizer extends Component {
             }}
           >
             <div id="final" className={classNames("final")} />
+            {this.state.text ? (
+              <Translater
+                googleTranslate={googleTranslate}
+                source={this.state.translatedText}
+              />
+            ) : null}
           </div>
         )}
       </div>
