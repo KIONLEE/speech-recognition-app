@@ -15,10 +15,10 @@ class Speaker extends Component {
     this.speech
       .init({
         volume: 0.5,
-        lang: "en-GB",
+        lang: "es-US",
         rate: 1,
         pitch: 1,
-        voice: "Google UK English Female",
+        voice: "Microsoft Zira Desktop - English (United States)",
         splitSentences: false
       })
       .then(data => {

@@ -51,7 +51,7 @@ class App extends Component {
       if (
         this.state.showMyVoice &&
         this.state.currentInterval &&
-        this.state.currentInterval <= this.duration
+        this.state.currentInterval - 1 <= this.duration
       ) {
         this.setState({
           showMyVoice: false,
@@ -77,6 +77,7 @@ class App extends Component {
   handleShowMyVoice = () => {
     this.setState({
       showMyVoice: !this.state.showMyVoice,
+      isPlayingMyVoice: !this.state.isPlayingMyVoice,
       lastOpenTime: this.state.showMyVoice ? null : new Date()
     });
   };

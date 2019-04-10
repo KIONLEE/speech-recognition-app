@@ -193,7 +193,9 @@ class Recognizer extends Component {
           className={classNames(
             isMyVoiceAvailable ? "interim_wrapper--my_voice" : "interim_wrapper"
           )}
-          onClick={isMyVoiceAvailable ? this.props.handleShowMyVoice : null}
+          onClick={() => {
+            this.props.handleShowMyVoice();
+          }}
         >
           <div id="interim" className={classNames("interim")}>
             {isMyVoiceAvailable ? (
